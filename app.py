@@ -20,6 +20,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'replacewithsecretkey'
 api = Api(app)
 
+# used other then default values for the passwd column name
+app.config['JWT_AUTH_USERNAME_KEY'] = 'username'
+app.config['JWT_AUTH_PASSWORD_KEY'] = 'passwd'
 jwt = JWT(app, authenticate, identity)
 
 api.add_resource(Item, '/item/<string:name>')

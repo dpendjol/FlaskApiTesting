@@ -16,11 +16,16 @@ class UserTest(BaseTest):
         with self.app() as client:
             with self.app_context():
                 request = client.post('/register', data={'username': 'testUser', 'passwd': 'testPasswd'})
-                user = UserModel.find_by_name('testUser')
                 auth_req = client.post('/auth', data=json.dumps({'username': 'testUser', 'passwd': 'testPasswd'}),
                                        headers={'Content-Type': 'application/json'})
                 
                 self.assertIn('access_token', json.loads(auth_req.data).keys(), 'Access token not found in response')
     
-        def test_register_duplicate(self):
-        pass
+    def test_register_duplicate(self):
+        with self.app() as client:
+            with self.app_context():
+                request = client.post('/register', data={'username': 'testUser', 'passwd': 'testPasswd'})
+                second_req = client.post('/register', data={'username': 'testUser', 'passwd': 'testPasswd'})
+                
+                self.assertIn('message', json.loads(second_req.data).keys())
+                self.assertEqual(json.loads(second_req.data)['message'], 'User already registered')
