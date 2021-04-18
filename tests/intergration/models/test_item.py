@@ -1,10 +1,12 @@
 from tests.base_test import BaseTest
 from models.item import ItemModel
+from models.store import StoreModel
 
 class ItemTest(BaseTest):
     def test_crud(self):
         with self.app_context():
-            item = ItemModel('test', 19.99)
+            StoreModel('test').save_to_db()
+            item = ItemModel('test', 19.99, 1)
             
             self.assertIsNone(ItemModel.find_by_name('test'))
             
@@ -15,3 +17,15 @@ class ItemTest(BaseTest):
             item.delete_from_db()
 
             self.assertIsNone(ItemModel.find_by_name('test'))
+    
+    def test_store_relationship(self):
+        with self.app_context():
+            store = StoreModel('test')
+            
+            item = ItemModel('test', 19.99, 1)
+            
+            store.save_to_db()
+            item.save_to_db()
+            
+            self.assertEqual(ItemModel.find_by_name('test').store, store)
+            
