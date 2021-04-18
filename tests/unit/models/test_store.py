@@ -5,4 +5,5 @@ class StoreTest(UnitBaseTest):
     def test_create_store(self):
         store = StoreModel('test')
         
-        self.assertEqual(store.name, 'test')
+        self.assertEqual(store.name, 'test',
+                         'Constructor for store isn\'t working properly')

@@ -5,8 +5,10 @@ class ItemTest(UnitBaseTest):
     def test_create(self):
         item = ItemModel('test', 19.99, 1)
         
-        self.assertEqual(item.name, 'test')
-        self.assertEqual(item.price, 19.99)
+        self.assertEqual(item.name, 'test',
+                         f'Expected \'test\', got {item.name}')
+        self.assertEqual(item.price, 19.99,
+                         f'Expected 19.99, got {item.price}')
     
     def test_json(self):
         item = ItemModel('test', 19.99, 1)
@@ -14,4 +16,5 @@ class ItemTest(UnitBaseTest):
         expected = {'name': 'test', 'price': 19.99}
         result = item.json()
         
-        self.assertEqual(result, expected)
+        self.assertEqual(result, expected,
+                         f"Expected {expected}, got {result}")
