@@ -1,10 +1,11 @@
 from tests.base_test import BaseTest
 from models.store import StoreModel
+from models.item import ItemModel
 import json
 
 class StoreTest(BaseTest):
     def test_create_store(self):
-         with self.app() as client:
+        with self.app() as client:
             with self.app_context():
                 response = client.post('/store/test')
 
@@ -28,7 +29,7 @@ class StoreTest(BaseTest):
                                     })
     
     def test_delete_store(self):
-         with self.app() as client:
+        with self.app() as client:
             with self.app_context():
                 response = client.delete('/store/test')
                 
@@ -59,13 +60,32 @@ class StoreTest(BaseTest):
                                     })
     
     def test_store_found_with_items(self):
-        pass
+        with self.app() as client:
+            with self.app_context():
+                response = client.post('/store/test')
+                ItemModel('testItem', 19.99, 1).save_to_db()
+                response = client.get('/store/test')
+
+                self.assertDictEqual(json.loads(response.data), 
+                                    {
+                                        'name': 'test',
+                                        'items': [{'name': 'testItem', 'price': 19.99}]
+                                    })
+
 
     def test_store_list(self):
-         with self.app() as client:
+        with self.app() as client:
             with self.app_context():
-                response = client.post('/store')
+                response = client.post('/store/test')
+
+                response = client.get('/stores')
+                self.assertDictEqual({'stores': [{'name': 'test', 'items': []}]}, json.loads(response.data))
     
     def test_store_list_with_items(self):
-        pass
-    
+        with self.app() as client:
+            with self.app_context():
+                response = client.post('/store/test')
+                ItemModel('testItem', 19.99, 1).save_to_db()
+
+                response = client.get('/stores')
+                self.assertDictEqual({'stores': [{'name': 'test', 'items': [{'name': 'testItem', 'price': 19.99}]}]}, json.loads(response.data))
