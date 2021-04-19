@@ -28,19 +28,43 @@ class StoreTest(BaseTest):
                                     })
     
     def test_delete_store(self):
-        pass
+         with self.app() as client:
+            with self.app_context():
+                response = client.delete('/store/test')
+                
+                self.assertEqual(response.status_code, 200)
+                self.assertDictEqual(json.loads(response.data), {'message': 'Store deleted'})
     
     def test_find_store(self):
-        pass
+        with self.app() as client:
+            with self.app_context():
+                client.post('/store/test')
+                response = client.get('/store/test')
+                
+                self.assertDictEqual(json.loads(response.data), 
+                                    {
+                                        'name': 'test',
+                                        'items': []
+                                    })
     
     def test_store_not_found(self):
-        pass
+        with self.app() as client:
+            with self.app_context():
+                response = client.get('/store/test')
+                
+                self.assertEqual(response.status_code, 404)
+                self.assertDictEqual(json.loads(response.data), 
+                                    {
+                                        'message': 'Store not found'
+                                    })
     
     def test_store_found_with_items(self):
         pass
 
     def test_store_list(self):
-        pass
+         with self.app() as client:
+            with self.app_context():
+                response = client.post('/store')
     
     def test_store_list_with_items(self):
         pass
